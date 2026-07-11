@@ -220,7 +220,6 @@
 
             .bottom-bar { padding: 10px; height: 130px; border-top-left-radius: 20px; border-top-right-radius: 20px; align-items: flex-end; }
             
-            /* تعديل ترتيب الفريقين بالطول عشان ما تتداخل الأدوات */
             .team-panel-1 { flex-direction: column; gap: 6px; width: 42%; }
             .team-panel-2 { flex-direction: column-reverse; gap: 6px; width: 42%; }
             
@@ -233,21 +232,18 @@
             .game-title { font-size: 55px; }
         }
 
-        /* 2. التجاوب الذكي للجوال (الوضع الأفقي - بالعرض) - التصميم الجديد! */
+        /* 2. التجاوب الذكي للجوال (الوضع الأفقي - بالعرض) */
         @media (max-height: 600px) and (orientation: landscape) {
             .main-container { padding: 10px; margin: 5px auto; }
             #gameDashboard { padding: 5px 10px; }
             
-            /* إجبار البطاقات على 3 أعمدة وتقليل حجمها */
             .game-grid { grid-template-columns: repeat(3, 1fr); margin-bottom: 100px; gap: 8px; }
             .game-card { height: 140px; border-width: 2px; }
             .card-side button { font-size: 16px; border-bottom-width: 2px; padding: 2px; }
             .card-cat-title { font-size: 11px; padding: 3px 0; border-top-width: 2px; }
             
-            /* ضغط الشريط السفلي ليكون مرتب بجانب بعض */
             .bottom-bar { height: 85px; padding: 8px 15px; border-top-left-radius: 15px; border-top-right-radius: 15px; align-items: center; }
             
-            /* ترتيب (أدوات | نقاط واسم) لكل فريق */
             .team-panel { width: 43%; flex-direction: row; gap: 8px; align-items: center; }
             
             .score-controls { height: 32px; padding: 0 5px; }
@@ -264,6 +260,23 @@
             .game-title-dash { font-size: 22px; }
             .game-header-btns button { padding: 5px 12px; font-size: 12px; }
             .turn-indicator { padding: 5px 15px; font-size: 12px; }
+
+            /* --- إصلاح نافذة السؤال (Modal) في الوضع الأفقي --- */
+            .modal-card {
+                padding: 15px !important;
+                max-height: 85vh; /* ترك مساحة بسيطة من الأعلى والأسفل */
+                overflow-y: auto; /* تفعيل السحب إذا كان المحتوى طويلاً */
+                width: 90% !important;
+                max-width: 500px !important;
+            }
+            #qCategory { font-size: 16px !important; margin-bottom: 5px !important; }
+            #qPoints { font-size: 20px !important; margin: 5px 0 !important; }
+            #qText { font-size: 15px !important; margin: 10px 0 !important; }
+            #questionModal p { font-size: 12px !important; margin-bottom: 10px !important; }
+            #questionModal .start-btn { padding: 8px 15px !important; font-size: 13px !important; margin-top: 10px !important; }
+            /* تقليل المسافات لزر الإلغاء */
+            #questionModal .start-btn:last-child { margin-top: 10px !important; padding: 8px !important; }
+            #ansButtonsContainer { margin-top: 10px !important; gap: 8px !important; }
         }
     </style>
 </head>
@@ -312,7 +325,7 @@
         <h2 id="qPoints" style="color: #cc4444; font-size: 30px; margin: 10px 0;">200</h2>
         <div id="qText" style="font-size: 20px; margin: 20px 0; font-weight: bold; white-space: pre-line;">نص السؤال يظهر هنا...</div>
         <p style="font-size: 14px; color: #666; margin-bottom: 20px;">من الفريق الذي أجاب بشكل صحيح؟</p>
-        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap;">
+        <div id="ansButtonsContainer" style="display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap;">
             <button class="start-btn" onclick="awardPoints(1)" id="btnTeam1Ans">الفريق الأول</button>
             <button class="start-btn" onclick="awardPoints(2)" id="btnTeam2Ans">الفريق الثاني</button>
         </div>
@@ -583,7 +596,6 @@ const filterTypes = ["رياضة", "تاريخ", "جغرافيا", "علوم", "
                      "مقاطع فيديو", "مسلسلات خليجية", "مسلسلات عربية", "أفلام عربية", "صوتيات", 
                      "مسلسلات أجنبية", "أفلام أجنبية", "مؤثرين", "اسم لاعب", "سبيستون", "دوريات", "Esports"];
 
-// تم تغيير أيقونة الروليت لصورة كما طلبت
 const toolsData = [
     { name: "الروليت", icon: "<img src='images/roulette.png' style='width: 1em; height: 1em; vertical-align: middle;'>" },
     { name: "اتصل بصديق", icon: "📞" },
