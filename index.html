@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -530,7 +531,7 @@
         flex-direction: column;
         align-items: center;
     }
-    
+     
     .game-card {
         width: 95% !important;
         margin-bottom: 10px;
@@ -818,6 +819,16 @@ function goToToolsPage() {
         alert("يرجى إدخال اسم اللعبة!");
         return;
     }
+
+    // تحديث أسماء الفرق في شاشة الأدوات
+    const t1Name = document.getElementById('team1Name').value || "الفريق الأول";
+    const t2Name = document.getElementById('team2Name').value || "الفريق الثاني";
+    const team1Title = document.getElementById('team1Display');
+    const team2Title = document.getElementById('team2Display');
+    
+    if(team1Title) team1Title.innerText = t1Name;
+    if(team2Title) team2Title.innerText = t2Name;
+
     showScreen('tools');
     saveDraftState();
 }
@@ -1377,7 +1388,6 @@ function restoreActiveGame() {
 function exitGame() {
     localStorage.removeItem('fitnahActiveSession');
     localStorage.removeItem('fitnahSetupDraft');
-    localStorage.removeItem('fitnaCurrentTurn');
     localStorage.removeItem('fitnaCurrentTurn');
     localStorage.removeItem('playedQuestions'); // مسح سجل الأسئلة
     location.reload();
