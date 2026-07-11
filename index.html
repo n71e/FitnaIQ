@@ -26,35 +26,19 @@
         }
 
         .main-container { 
-            background: #fff; 
-            border-radius: 30px; 
-            padding: 30px; 
-            margin: 20px auto; 
-            width: 90%; 
-            max-width: 1000px; 
-            box-shadow: var(--shadow);
-            box-sizing: border-box;
+            background: #fff; border-radius: 30px; padding: 30px; 
+            margin: 20px auto; width: 90%; max-width: 1000px; 
+            box-shadow: var(--shadow); box-sizing: border-box;
         }
         
         .filter-wrapper { 
-            display: flex; 
-            align-items: center; 
-            background: #F2F1ED; 
-            padding: 10px; 
-            border-radius: 50px; 
-            margin-bottom: 30px; 
-            overflow: hidden; 
+            display: flex; align-items: center; background: #F2F1ED; 
+            padding: 10px; border-radius: 50px; margin-bottom: 30px; overflow: hidden; 
         }
 
         .scrollable-tags { 
-            display: flex; 
-            overflow-x: auto; 
-            width: 100%; 
-            min-width: 0; 
-            gap: 10px; 
-            scrollbar-width: none; 
-            padding: 5px; 
-            white-space: nowrap; 
+            display: flex; overflow-x: auto; width: 100%; min-width: 0; 
+            gap: 10px; padding: 5px; white-space: nowrap; scrollbar-width: none; 
         }
         .scrollable-tags::-webkit-scrollbar { display: none; }
 
@@ -79,9 +63,9 @@
         .card:hover { transform: translateY(-5px); border-color: var(--primary-sage); }
 
         .card-img-top {
-            background: #F7F6F2; border-radius: 15px; height: 120px;
-            margin-bottom: 10px; display: flex; align-items: center;
-            justify-content: center; border: 1px solid #EBE9E4; overflow: hidden; position: relative;
+            background: #F7F6F2; border-radius: 15px; height: 120px; margin-bottom: 10px; 
+            display: flex; align-items: center; justify-content: center; 
+            border: 1px solid #EBE9E4; overflow: hidden; position: relative;
         }
 
         .badge-new {
@@ -129,20 +113,15 @@
         .plus-slot { width: 40px; height: 40px; border-radius: 50%; background: #F8F7F3; border: 1px dashed #D5D2C8; display: flex; align-items: center; justify-content: center; color: #7C876A; font-size: 20px; flex-shrink: 0; }
         .selected-item { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #7C876A; object-fit: cover; }
 
-        /* تعديلات شاشة الأدوات (نظام السحب) */
+        /* شاشة الأدوات (نظام السحب) */
         .teams-layout { display: flex; flex-direction: column; gap: 20px; width: 100%; }
         .team-tools-box { background:#EBE9E4; padding:20px; border-radius:20px; width: 100%; box-sizing: border-box; }
-        
-        .swipeable-tools {
-            display: flex; overflow-x: auto; gap: 12px; padding-bottom: 10px; scrollbar-width: none;
-        }
+        .swipeable-tools { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 10px; scrollbar-width: none; }
         .swipeable-tools::-webkit-scrollbar { display: none; }
-        
         .tool-item {
             background: white; padding: 15px 10px; border-radius: 15px;
             cursor: pointer; text-align: center; border: 2px solid #EBE9E4; transition: 0.3s;
-            box-sizing: border-box; flex: 0 0 110px; /* عرض ثابت للسحب */
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            box-sizing: border-box; flex: 0 0 110px; display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
         .tool-item.active { background: var(--primary-sage); color: white; border-color: var(--primary-sage); }
         .tool-item.active div { color: white !important; }
@@ -156,123 +135,135 @@
             margin-left: -40px; margin-right: -40px; padding-left: 40px; padding-right: 40px;
             background-color: var(--secondary-sand); flex-direction: row-reverse;
         }
-
         .game-header-btns { display: flex; gap: 10px; }
         .game-header-btns button { padding: 8px 20px; border-radius: 20px; border: none; color: white; font-weight: bold; cursor: pointer; font-family: inherit; }
 
         .game-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 10px 0; margin-bottom: 180px; }
-
         .game-card {
             display: flex; background: var(--bg-color); border: 4px solid var(--primary-sage);
             border-radius: 20px; overflow: hidden; height: 260px; box-shadow: var(--shadow); transition: 0.3s;
         }
-        
         .card-side { flex: 1; display: flex; flex-direction: column; }
         .card-side button {
             flex: 1; background: transparent; border: none; border-bottom: 4px solid var(--primary-sage);
             font-size: 28px; font-weight: 900; cursor: pointer; color: var(--primary-sage); font-family: inherit;
         }
         .card-side button:last-child { border-bottom: none; }
-        
         .border-left-soft { border-left: 4px solid var(--primary-sage); }
         .border-right-soft { border-right: 4px solid var(--primary-sage); }
-
         .card-center { flex: 1.5; display: flex; flex-direction: column; }
         .card-image-container { flex: 1; background-color: var(--card-bg); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; }
         .card-cat-title { background: var(--primary-sage); color: white; text-align: center; padding: 10px 0; font-weight: bold; font-size: 18px; border-top: 4px solid var(--primary-sage); }
 
-        /* تعديلات الشريط السفلي (حل مشكلة التداخل) */
+        /* تعديلات الشريط السفلي الافتراضية (Desktop) */
         .bottom-bar {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: var(--primary-sage); border-top-left-radius: 30px; border-top-right-radius: 30px;
             display: flex; justify-content: space-between; padding: 15px 30px; box-sizing: border-box; 
-            align-items: flex-start; z-index: 100; height: 140px;
+            align-items: center; z-index: 100; height: 130px;
         }
-
-        .team-panel { 
-            display: flex; flex-direction: column; gap: 8px; width: 38%; 
-        }
-        
+        .team-panel { display: flex; flex-direction: row; align-items: center; gap: 15px; width: 42%; }
+        .team-info-wrapper { flex: 1; display: flex; flex-direction: column; }
         .score-controls {
-            display: flex; background: var(--bg-color); border-radius: 20px; height: 40px;
+            display: flex; background: var(--bg-color); border-radius: 20px; height: 45px;
             align-items: center; justify-content: space-between; padding: 0 10px; width: 100%; box-sizing: border-box;
         }
         .score-controls button { background: transparent; border: none; font-size: 28px; cursor: pointer; color: var(--primary-sage); font-weight: bold; padding: 0 10px; }
         .score-controls span { font-size: 22px; font-weight: bold; color: var(--text-color); }
-
         .team-name-input { 
             background: var(--bg-color); border: none; border-radius: 15px; padding: 5px 10px; 
             text-align: center; font-weight: bold; font-family: inherit; color: var(--text-color); 
-            width: 100%; box-sizing: border-box; height: 35px;
+            width: 100%; box-sizing: border-box; height: 35px; margin-top: 6px;
         }
-
-        .tools-container { 
-            display: flex; gap: 5px; justify-content: center; overflow-x: auto; scrollbar-width: none; 
-        }
+        .tools-container { display: flex; gap: 5px; justify-content: center; overflow-x: auto; scrollbar-width: none; }
         .tool-icon { 
-            width: 32px; height: 32px; border-radius: 50%; background: var(--bg-color); flex-shrink: 0;
+            width: 38px; height: 38px; border-radius: 50%; background: var(--bg-color); flex-shrink: 0;
             display: flex; align-items: center; justify-content: center; color: var(--primary-sage); 
-            font-size: 14px; border: 1.5px solid var(--primary-sage); 
+            font-size: 16px; border: 1.5px solid var(--primary-sage); 
         }
 
         .center-logo {
-            position: absolute; left: 50%; bottom: 35px; transform: translateX(-50%);
+            position: absolute; left: 50%; bottom: 30px; transform: translateX(-50%);
             width: 70px; height: 70px; background: var(--card-bg); border-radius: 50%;
             border: 3px solid var(--hover-sage); display: flex; align-items: center; justify-content: center;
             font-weight: 900; font-size: 18px; color: #FFFFFF; -webkit-text-stroke: 1px var(--primary-sage); text-shadow: 2px 2px 0px var(--primary-sage);
         }
-
         .turn-indicator {
             background: var(--primary-sage); color: white; padding: 8px 20px; border-radius: 50px;
             font-weight: bold; font-size: 14px; border: 2px solid var(--secondary-sand); text-align: center; min-width: 120px;
         }
-
         .game-title-dash {
             font-size: 32px; font-weight: 900; color: #FFFFFF; margin: 0; transform: rotate(-5deg); letter-spacing: 2px;
             -webkit-text-stroke: 1px var(--primary-sage); text-shadow: 2px 2px 0px var(--primary-sage);
         }
 
-        /* التجاوب الذكي للجوال */
-        @media (max-width: 768px) {
+        /* 1. التجاوب الذكي للجوال (الوضع الرأسي - بالطول) */
+        @media (max-width: 768px) and (orientation: portrait) {
             .main-container { padding: 15px; width: 95%; margin: 10px auto; }
-            
             .category-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
             .card { height: 160px; padding: 10px; }
             .card-img-top { height: 90px; }
-            
             .selection-bar { flex-direction: row-reverse; padding: 10px; bottom: 10px; width: 95%; gap: 10px; }
             .start-btn { padding: 10px 20px; font-size: 14px; }
             
             #gameDashboard { padding: 10px; }
-            .game-header { 
-                margin-left: -10px; margin-right: -10px; padding-left: 10px; padding-right: 10px; 
-                flex-direction: column; gap: 10px; padding-top: 15px;
-            }
+            .game-header { margin-left: -10px; margin-right: -10px; padding-left: 10px; padding-right: 10px; flex-direction: column; gap: 10px; padding-top: 15px; }
             .game-header-btns { width: 100%; justify-content: space-between; }
             .turn-indicator { width: 100%; box-sizing: border-box; }
             
-            .game-grid { 
-                grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 160px; 
-            }
+            .game-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 160px; }
             .game-card { height: 180px; border-width: 2px; }
             .card-side button { font-size: 18px; border-bottom-width: 2px; }
             .border-left-soft { border-left-width: 2px; }
             .border-right-soft { border-right-width: 2px; }
             .card-cat-title { font-size: 13px; padding: 5px 0; border-top-width: 2px; }
 
-            /* تعديل الشريط السفلي للجوال (منع التداخل) */
-            .bottom-bar { 
-                padding: 10px; height: 130px; border-top-left-radius: 20px; border-top-right-radius: 20px;
-            }
-            .team-panel { width: 42%; gap: 6px; }
+            .bottom-bar { padding: 10px; height: 130px; border-top-left-radius: 20px; border-top-right-radius: 20px; align-items: flex-end; }
+            
+            /* تعديل ترتيب الفريقين بالطول عشان ما تتداخل الأدوات */
+            .team-panel-1 { flex-direction: column; gap: 6px; width: 42%; }
+            .team-panel-2 { flex-direction: column-reverse; gap: 6px; width: 42%; }
+            
             .score-controls { height: 35px; padding: 0 5px; }
             .score-controls button { font-size: 24px; padding: 0 5px; }
             .score-controls span { font-size: 18px; }
-            .team-name-input { height: 30px; font-size: 12px; }
-            .tool-icon { width: 28px; height: 28px; font-size: 12px; }
+            .team-name-input { height: 30px; font-size: 12px; margin-top: 0; }
+            .tool-icon { width: 30px; height: 30px; font-size: 13px; }
             .center-logo { width: 55px; height: 55px; font-size: 14px; bottom: 45px; border-width: 2px; }
-            
             .game-title { font-size: 55px; }
+        }
+
+        /* 2. التجاوب الذكي للجوال (الوضع الأفقي - بالعرض) - التصميم الجديد! */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .main-container { padding: 10px; margin: 5px auto; }
+            #gameDashboard { padding: 5px 10px; }
+            
+            /* إجبار البطاقات على 3 أعمدة وتقليل حجمها */
+            .game-grid { grid-template-columns: repeat(3, 1fr); margin-bottom: 100px; gap: 8px; }
+            .game-card { height: 140px; border-width: 2px; }
+            .card-side button { font-size: 16px; border-bottom-width: 2px; padding: 2px; }
+            .card-cat-title { font-size: 11px; padding: 3px 0; border-top-width: 2px; }
+            
+            /* ضغط الشريط السفلي ليكون مرتب بجانب بعض */
+            .bottom-bar { height: 85px; padding: 8px 15px; border-top-left-radius: 15px; border-top-right-radius: 15px; align-items: center; }
+            
+            /* ترتيب (أدوات | نقاط واسم) لكل فريق */
+            .team-panel { width: 43%; flex-direction: row; gap: 8px; align-items: center; }
+            
+            .score-controls { height: 32px; padding: 0 5px; }
+            .score-controls button { font-size: 20px; }
+            .score-controls span { font-size: 16px; }
+            .team-name-input { height: 26px; font-size: 12px; margin-top: 4px; }
+            
+            .tools-container { gap: 4px; }
+            .tool-icon { width: 28px; height: 28px; font-size: 12px; }
+            
+            .center-logo { width: 45px; height: 45px; font-size: 11px; bottom: 15px; border-width: 2px; }
+            
+            .game-header { padding-bottom: 5px; margin-bottom: 10px; margin-top: 0; }
+            .game-title-dash { font-size: 22px; }
+            .game-header-btns button { padding: 5px 12px; font-size: 12px; }
+            .turn-indicator { padding: 5px 15px; font-size: 12px; }
         }
     </style>
 </head>
@@ -294,7 +285,6 @@
             <button class="filter-btn active" onclick="render('الكل')">الكل</button>
         </div>
     </div>
-    
     <h2 style="text-align:center; font-size: 20px; margin-bottom: 25px;">اختر الفئات</h2>
     <div class="category-grid" id="categoryGrid"></div>
 </div>
@@ -351,7 +341,7 @@
     </div>
 </div>
 
-<!-- الشاشة الثالثة: اختيار الأدوات (تم تعديلها للسحب وبدون شرح) -->
+<!-- الشاشة الثالثة: اختيار الأدوات -->
 <div id="toolsContainer" class="main-container" style="display:none;">
     <h2 style="text-align:center; color: var(--primary-sage);">اختر أدوات المساعدة</h2>
     <p style="text-align:center; color: #666; font-size: 14px; margin-bottom: 25px;">اسحب لعرض جميع الأدوات، وتقدر تختار 3 أدوات لكل فريق.</p>
@@ -387,38 +377,38 @@
 
     <div id="questionsGrid" class="game-grid"></div>
     
-    <!-- تم تعديل الشريط السفلي لمنع التداخل تماماً -->
     <div class="bottom-bar">
-        <!-- الفريق الأول (يمين) -->
-        <div class="team-panel">
-            <div class="score-controls">
-                <button onclick="manualScoreChange(1, -100)">-</button>
-                <span id="score1">0</span>
-                <button onclick="manualScoreChange(1, 100)">+</button>
+        <!-- الفريق الثاني (يسار) -->
+        <div class="team-panel team-panel-2">
+            <div class="tools-container" id="t2Tools"></div>
+            <div class="team-info-wrapper">
+                <div class="score-controls">
+                    <button onclick="manualScoreChange(2, -100)">-</button>
+                    <span id="score2">0</span>
+                    <button onclick="manualScoreChange(2, 100)">+</button>
+                </div>
+                <input type="text" id="t2Display" class="team-name-input" readonly>
             </div>
-            <input type="text" id="t1Display" class="team-name-input" readonly>
-            <div class="tools-container" id="t1Tools"></div>
         </div>
 
         <div class="center-logo">فِطنة</div>
 
-        <!-- الفريق الثاني (يسار) -->
-        <div class="team-panel">
-            <div class="score-controls">
-                <button onclick="manualScoreChange(2, -100)">-</button>
-                <span id="score2">0</span>
-                <button onclick="manualScoreChange(2, 100)">+</button>
+        <!-- الفريق الأول (يمين) -->
+        <div class="team-panel team-panel-1">
+            <div class="team-info-wrapper">
+                <div class="score-controls">
+                    <button onclick="manualScoreChange(1, -100)">-</button>
+                    <span id="score1">0</span>
+                    <button onclick="manualScoreChange(1, 100)">+</button>
+                </div>
+                <input type="text" id="t1Display" class="team-name-input" readonly>
             </div>
-            <input type="text" id="t2Display" class="team-name-input" readonly>
-            <div class="tools-container" id="t2Tools"></div>
+            <div class="tools-container" id="t1Tools"></div>
         </div>
     </div>
 </div>
 
 <script>
-// ==========================================
-// 1. المتغيرات وإدارة الشاشات
-// ==========================================
 let currentStep = 'categories'; 
 let currentActiveTag = "الكل"; 
 let selectedCategories = [];
@@ -483,9 +473,6 @@ function goToToolsPage() {
 }
 function backToGameDetails() { showScreen('details'); saveDraftState(); }
 
-// ==========================================
-// 2. قاعدة البيانات الكاملة
-// ==========================================
 const db = {
     categories: [
         { name: "رسم", tag: "عام", desc: "اختبر معرفتك بأساسيات الرسم وتقنيات الفن البصري." },
@@ -572,7 +559,7 @@ const db = {
         { name: "تسريحة اللاعبين", tag: "شخصيات", desc: "تميز اللاعبين من قصات شعرهم المميزة!" },
         { name: "NBA", tag: "دوريات", desc: "أسئلة عن دوري كرة السلة الأمريكي للمحترفين." },
         { name: "UFC", tag: "Esports", desc: "تحديات في عالم الفنون القتالية المختلطة." },
-        { name: "رياضة", tag: "رياضة", desc: "أسئلة متنوعة في مختلف أنواع الرياضات." },
+        { name: "رياضة", "tag": "رياضة", desc: "أسئلة متنوعة في مختلف أنواع الرياضات." },
         { name: "الدوري السعودي", tag: "كرة قدم", desc: "معلومات عن الأندية واللاعبين في دورينا." },
         { name: "سيارات", tag: "سيارات", desc: "اختبر معرفتك بأنواع وموديلات السيارات." },
         { name: "ركز شوي", tag: "ألغاز", desc: "ألغاز تعتمد على قوة الملاحظة والتركيز." },
@@ -596,8 +583,9 @@ const filterTypes = ["رياضة", "تاريخ", "جغرافيا", "علوم", "
                      "مقاطع فيديو", "مسلسلات خليجية", "مسلسلات عربية", "أفلام عربية", "صوتيات", 
                      "مسلسلات أجنبية", "أفلام أجنبية", "مؤثرين", "اسم لاعب", "سبيستون", "دوريات", "Esports"];
 
+// تم تغيير أيقونة الروليت لصورة كما طلبت
 const toolsData = [
-    { name: "الروليت", icon: "❄️" },
+    { name: "الروليت", icon: "<img src='images/roulette.png' style='width: 1em; height: 1em; vertical-align: middle;'>" },
     { name: "اتصل بصديق", icon: "📞" },
     { name: "مضاعفة النقاط", icon: "2x" },
     { name: "الحفرة", icon: "↔️" },
