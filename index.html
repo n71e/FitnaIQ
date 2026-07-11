@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta charset="UTF-8">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <style>
         /* تعريف الألوان للثيم الهادئ */
         :root {
@@ -21,10 +21,9 @@
             color: var(--text-color); 
             font-family: 'Cairo', sans-serif; 
             margin: 0; 
-            min-height: 100vh; 
+            min-height: 100vh;
+            overflow-x: hidden; 
         }
-
-        .header-section { text-align: center; padding: 40px 20px; }
 
         .main-container { 
             background: #fff; 
@@ -34,8 +33,16 @@
             width: 90%; 
             max-width: 1000px; 
             box-shadow: var(--shadow);
+            box-sizing: border-box;
         }
         
+        /* التجاوب للحاويات الرئيسية */
+        .flex-layout { display: flex; gap: 30px; align-items: flex-start; }
+        .flex-layout-item-1 { flex: 1; background: #EBE9E4; padding: 20px; border-radius: 20px; max-height: 70vh; overflow-y: auto; }
+        .flex-layout-item-2 { flex: 2; }
+        .teams-layout { display: flex; gap: 20px; }
+        .team-tools-box { background:#EBE9E4; padding:20px; border-radius:20px; flex:1; }
+
         .filter-wrapper { 
             display: flex; 
             align-items: center; 
@@ -55,14 +62,13 @@
             scrollbar-width: none; 
             padding: 5px; 
             white-space: nowrap; 
-            pointer-events: auto;
         }
+        .scrollable-tags::-webkit-scrollbar { display: none; }
 
         .fixed-tags { display: flex; gap: 10px; border-left: 1px solid #D5D2C8; padding-left: 15px; margin-left: 10px; }
         
         .filter-btn {
             flex-shrink: 0;
-            white-space: nowrap;
             background: transparent;
             border: 1px solid #D5D2C8;
             color: var(--text-color);
@@ -70,13 +76,10 @@
             border-radius: 20px;
             cursor: pointer;
             transition: 0.3s;
-            position: relative; 
-            z-index: 100;      
-            pointer-events: auto;
+            font-family: inherit;
         }
-
-        .filter-btn:hover { background: var(--secondary-sand); border-color: var(--secondary-sand); }
-        .filter-btn:active { background: var(--primary-sage); color: white; }
+        .filter-btn.active { background: var(--primary-sage); color: white; border-color: var(--primary-sage); }
+        .filter-btn:hover { background: var(--secondary-sand); border-color: var(--secondary-sand); color: var(--text-color); }
         
         .category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; margin-top: 20px; }
 
@@ -90,9 +93,10 @@
             transition: 0.3s;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-            height: 200px;
+            position: relative;
             box-shadow: var(--shadow);
+            height: 200px;
+            box-sizing: border-box;
         }
         .card:hover { transform: translateY(-5px); border-color: var(--primary-sage); }
 
@@ -105,6 +109,8 @@
             align-items: center;
             justify-content: center;
             border: 1px solid #EBE9E4;
+            overflow: hidden;
+            position: relative;
         }
 
         .badge-new {
@@ -116,430 +122,198 @@
             position: absolute;
             top: 10px;
             left: 10px;
+            z-index: 5;
         }
 
-        .card-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text-color);
-            margin-top: 5px;
-        }
+        .card-title { font-size: 15px; font-weight: 600; margin-top: 5px; }
 
         .start-btn { 
             background: var(--primary-sage); 
             color: white; 
             border: none; 
-            padding: 15px 50px; 
+            padding: 12px 40px; 
             border-radius: 50px; 
-            font-size: 18px; 
+            font-size: 16px; 
             cursor: pointer;
             transition: 0.3s;
+            font-weight: bold;
+            font-family: inherit;
         }
         .start-btn:hover { background: var(--hover-sage); }
 
         .nav-btn {
-            flex-shrink: 0; 
-            width: 35px; 
-            height: 35px;
-            background: #EBE9E4; 
-            border: none; 
-            cursor: pointer;
-            border-radius: 50%;
-            margin: 0 5px;
-            pointer-events: auto;
-            z-index: 5;
+            flex-shrink: 0; width: 35px; height: 35px;
+            background: #EBE9E4; border: none; cursor: pointer;
+            border-radius: 50%; margin: 0 5px; z-index: 5;
         }
 
-        .fav-icon {
-            position: absolute; top: 10px; right: 10px;
-            font-size: 20px; color: #D5D2C8;
-            opacity: 0; transition: 0.3s; cursor: pointer;
-        }
-        .card:hover .fav-icon { opacity: 1; }
-        .fav-icon:hover { color: #d68f8f; }
-
-        .logo-container {
-            padding: 60px 20px 40px 20px;
-            display: flex;
-            justify-content: center;
-        }
+        .logo-container { padding: 40px 20px 20px; display: flex; justify-content: center; }
 
         .game-title {
-            font-size: 85px;
-            font-weight: 800;
-            color: #FFFFFF; 
-            margin: 0;
+            font-size: 85px; font-weight: 900; color: #FFFFFF; margin: 0;
             transform: rotate(-5deg); 
-            text-shadow: 4px 4px 0px #A9AFA0, 8px 8px 0px #7C876A, 10px 10px 15px rgba(0,0,0,0.15);
-            letter-spacing: 3px;
-            -webkit-text-stroke: 1px #7C876A;
+            text-shadow: 4px 4px 0px #A9AFA0, 8px 8px 0px #7C876A;
+            -webkit-text-stroke: 1.5px #7C876A;
         }
 
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 1000; align-items: center; justify-content: center; }
-        .modal-card { background: #F8F7F3; padding: 40px; border-radius: 40px; text-align: center; width: 300px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .modal-img { width: 120px; height: 120px; border-radius: 30px; margin-bottom: 20px; object-fit: cover; }
-        .close-modal { position: absolute; top: 20px; left: 20px; cursor: pointer; color: #7C876A; font-size: 24px; }
-
-        .card-actions {
-            position: absolute;
-            top: 5px;
-            left: 5px;
-            display: flex;
-            gap: 5px;
-            opacity: 0; 
-            transition: opacity 0.3s ease; 
-            z-index: 10;
-        }
-
-        .card:hover .card-actions { opacity: 1; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .modal-card { background: #F8F7F3; padding: 30px; border-radius: 30px; text-align: center; width: 90%; max-width: 400px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .modal-img { width: 120px; height: 120px; border-radius: 20px; margin-bottom: 20px; object-fit: cover; }
+        .close-modal { position: absolute; top: 20px; left: 20px; cursor: pointer; color: #7C876A; font-size: 24px; font-weight: bold; }
 
         .selection-bar {
-            position: fixed; 
-            bottom: 20px; 
-            left: 50%; 
-            transform: translateX(-50%);
-            background: #FFFFFF; 
-            padding: 10px 20px; 
-            border-radius: 50px;
-            display: flex; 
-            align-items: center; 
-            gap: 15px; 
-            z-index: 1000;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border: 1px solid #EBE9E4;
-        }
-
-        .selected-container { display: flex; gap: 8px; }
-
-        .plus-slot { 
-            width: 45px; height: 45px; border-radius: 50%; 
-            background: #F8F7F3; border: 1px dashed #D5D2C8;
-            display: flex; align-items: center; justify-content: center;
-            color: #7C876A; font-size: 20px; cursor: pointer;
-        }
-
-        .selected-item { 
-            width: 45px; height: 45px; border-radius: 50%; 
-            border: 2px solid #7C876A; object-fit: cover;
-        }
-
-        .follow-btn { 
-            background: #7C876A; color: white; border: none; 
-            padding: 10px 25px; border-radius: 30px; 
-            cursor: pointer; font-weight: 600; font-family: 'Cairo';
-        }
-
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-        .tool-item {
-            background: white;
-            padding: 10px;
-            border-radius: 15px;
-            cursor: pointer;
-            text-align: center;
-            border: 2px solid #EBE9E4;
-            transition: 0.3s;
-            font-size: 12px;
-        }
-        .tool-item.active {
-            background: var(--primary-sage);
-            color: white;
-            border-color: var(--primary-sage);
-        }
-        .tool-item.disabled {
-            opacity: 0.5;
-            filter: grayscale(100%);
-            pointer-events: none;
-        }
-
-        #gameDashboard {
-            display: none;
-            background-color: var(--bg-color); 
-            min-height: 100vh;
-            padding: 20px 40px;
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #FFFFFF; padding: 10px 20px; border-radius: 50px;
+            display: flex; align-items: center; gap: 15px; z-index: 1000;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15); border: 2px solid #EBE9E4;
+            width: 90%; max-width: 600px; justify-content: space-between;
             box-sizing: border-box;
-            position: relative;
-            width: 100%;
-            max-width: 100%;
-            margin: 0;
-            border-radius: 0;
-            border: none;
         }
+
+        .selected-container { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+        .selected-container::-webkit-scrollbar { display: none; }
+        .plus-slot { width: 40px; height: 40px; border-radius: 50%; background: #F8F7F3; border: 1px dashed #D5D2C8; display: flex; align-items: center; justify-content: center; color: #7C876A; font-size: 20px; flex-shrink: 0; }
+        .selected-item { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #7C876A; object-fit: cover; }
+
+        .tools-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .tool-item {
+            background: white; padding: 12px 8px; border-radius: 15px;
+            cursor: pointer; text-align: center; border: 2px solid #EBE9E4; transition: 0.3s;
+            box-sizing: border-box;
+        }
+        .tool-item.active { background: var(--primary-sage); color: white; border-color: var(--primary-sage); }
+        .tool-item.active div { color: white !important; }
+        .tool-item.disabled { opacity: 0.5; filter: grayscale(100%); pointer-events: none; }
+
+        #gameDashboard { display: none; background-color: var(--bg-color); min-height: 100vh; padding: 20px 40px; box-sizing: border-box; position: relative; }
 
         .game-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 4px solid var(--primary-sage); 
-            padding-bottom: 15px; 
-            margin-bottom: 30px; 
-            
-            /* حيلة التمدد الأفقي (يمين ويسار) */
-            margin-left: -40px; 
-            margin-right: -40px;
-            padding-left: 40px;
-            padding-right: 40px;
-            
-            /* -- الحل هنا: حيلة التمدد العمودي للأعلى -- */
-            margin-top: -20px; /* يسحب الشريط لفوق يغطي الفراغ */
-            padding-top: 25px; /* ينزل المحتوى (الأزرار والنص) لمستواه الطبيعي */
-            
-            background-color: var(--secondary-sand); 
-            flex-direction: row-reverse; /* لترتيب العناصر مثل الصورة */
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 4px solid var(--primary-sage); padding-bottom: 15px; margin-bottom: 20px;
+            margin-left: -40px; margin-right: -40px; padding-left: 40px; padding-right: 40px;
+            background-color: var(--secondary-sand); flex-direction: row-reverse;
         }
 
         .game-header-btns { display: flex; gap: 10px; }
-        .game-header-btns button {
-            padding: 10px 25px;
-            border-radius: 20px; 
-            border: none;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            font-family: 'Cairo', sans-serif;
-            box-shadow: var(--shadow);
-        }
+        .game-header-btns button { padding: 8px 20px; border-radius: 20px; border: none; color: white; font-weight: bold; cursor: pointer; font-family: inherit; }
 
-        /* تنسيق الشبكة لتكون أعمدة ثابتة */
-.game-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 أعمدة دائماً */
-    gap: 10px;
-    padding: 10px;
-    margin-bottom: 150px; /* مساحة فراغ لتظهر لوحة التحكم بالأسفل */
-}
+        .game-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 10px 0; margin-bottom: 150px; }
 
         .game-card {
-            display: flex;
-            background: var(--bg-color); /* لون خلفية ناعم للأزرار */
-            border: 4px solid var(--primary-sage); /* إطار خارجي سميك وبارز */
-            border-radius: 20px;
-            overflow: hidden;
-            height: 32vh; 
-            min-height: 280px; 
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1); /* ظل أقوى ليعطي تأثير البروز */
-            transition: 0.3s;
+            display: flex; background: var(--bg-color); border: 4px solid var(--primary-sage);
+            border-radius: 20px; overflow: hidden; height: 260px; box-shadow: var(--shadow); transition: 0.3s;
         }
         
-        .game-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 30px rgba(124, 135, 106, 0.3); /* توهج بلون الثيم عند التأشير */
-        }
-
-        .card-side {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
+        .card-side { flex: 1; display: flex; flex-direction: column; }
         .card-side button {
-            flex: 1;
-            background: transparent;
-            border: none;
-            border-bottom: 4px solid var(--primary-sage); /* فواصل أفقية سميكة */
-            font-size: 32px; /* تكبير الأرقام */
-            font-weight: 900; /* خط عريض جداً يشبه الصورة */
-            cursor: pointer;
-            color: var(--primary-sage);
-            font-family: 'Cairo', sans-serif;
-            transition: 0.3s;
+            flex: 1; background: transparent; border: none; border-bottom: 4px solid var(--primary-sage);
+            font-size: 28px; font-weight: 900; cursor: pointer; color: var(--primary-sage); font-family: inherit;
         }
-        
         .card-side button:last-child { border-bottom: none; }
-        .card-side button:hover { background: var(--secondary-sand); }
-
-        /* فواصل طولية سميكة لفصل الأرقام عن الصورة */
+        
         .border-left-soft { border-left: 4px solid var(--primary-sage); }
         .border-right-soft { border-right: 4px solid var(--primary-sage); }
 
-        .card-center {
-            flex: 1.5;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .card-image-container {
-            flex: 1;
-            background-color: var(--card-bg); /* خلفية بيضاء نقية للصورة لتبرز */
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .card-cat-title {
-            background: var(--primary-sage);
-            color: white;
-            text-align: center;
-            padding: 15px 0;
-            font-weight: bold;
-            font-size: 20px;
-            border-top: 4px solid var(--primary-sage); /* خط يفصل الصورة عن العنوان */
-        }
+        .card-center { flex: 1.5; display: flex; flex-direction: column; }
+        .card-image-container { flex: 1; background-color: var(--card-bg); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; }
+        .card-cat-title { background: var(--primary-sage); color: white; text-align: center; padding: 10px 0; font-weight: bold; font-size: 18px; border-top: 4px solid var(--primary-sage); }
 
         .bottom-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            /* تغيير الخلفية للون الزيتي */
-            background: var(--primary-sage); 
-            border-top: 1px solid var(--primary-sage);
-            border-top-left-radius: 40px;
-            border-top-right-radius: 40px;
-            display: flex;
-            justify-content: space-between;
-            padding: 20px 40px;
-            box-sizing: border-box;
-            align-items: flex-end;
-            z-index: 100;
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: var(--primary-sage); border-top-left-radius: 30px; border-top-right-radius: 30px;
+            display: flex; justify-content: space-between; padding: 20px 40px; box-sizing: border-box; align-items: flex-end; z-index: 100;
         }
 
-        /* تعديلات عشان تكون النصوص والأرقام واضحة فوق الخلفية الزيتية */
-        .score-controls span { font-size: 24px; font-weight: bold; color: white; }
-        .score-controls button { color: white; }
-        .team-name-input { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); }
-
-        .team-panel {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            width: 42%;
-        }
-
-        .team-info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
+        .team-panel { display: flex; align-items: center; gap: 15px; width: 42%; }
+        .team-info { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        
         .score-controls {
-            display: flex;
-            background: var(--bg-color);
-            border-radius: 20px;
-            height: 50px;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 15px;
-            border: 1px solid #EBE9E4;
+            display: flex; background: var(--bg-color); border-radius: 20px; height: 50px;
+            align-items: center; justify-content: space-between; padding: 0 15px;
         }
-
-        .score-controls button {
-            background: transparent;
-            border: none;
-            font-size: 28px;
-            cursor: pointer;
-            color: var(--primary-sage);
-            font-weight: bold;
-        }
+        .score-controls button { background: transparent; border: none; font-size: 28px; cursor: pointer; color: var(--primary-sage); font-weight: bold; padding: 0 10px; }
         .score-controls span { font-size: 24px; font-weight: bold; color: var(--text-color); }
 
-        .team-name-input {
-            background: var(--bg-color);
-            border: 1px solid #EBE9E4;
-            border-radius: 20px;
-            padding: 12px;
-            text-align: center;
-            font-weight: bold;
-            font-family: 'Cairo', sans-serif;
-            color: var(--text-color);
-        }
+        .team-name-input { background: var(--bg-color); border: none; border-radius: 20px; padding: 12px; text-align: center; font-weight: bold; font-family: inherit; color: var(--text-color); width: 100%; box-sizing: border-box;}
 
-        .tools-container { display: flex; gap: 8px; }
-        .tool-icon {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: var(--bg-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary-sage);
-            font-size: 18px;
-            border: 2px solid var(--primary-sage);
-        }
+        .tools-container { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+        .tool-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--bg-color); display: flex; align-items: center; justify-content: center; color: var(--primary-sage); font-size: 18px; border: 2px solid var(--primary-sage); }
 
         .center-logo {
-    position: absolute;
-    left: 50%;
-    bottom: 25px;
-    transform: translateX(-50%);
-    width: 90px;
-    height: 90px;
-    background: var(--card-bg);
-    border-radius: 50%;
-    /* هنا التعديل الوحيد: حدود بالزيتي الغامق */
-    border: 3px solid var(--hover-sage); 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: var(--shadow);
-    
-    /* التنسيق الخاص بالاسم (كما أرسلته أنت تماماً بدون تغيير) */
-    font-weight: 900;
-    font-size: 24px;
-    color: #FFFFFF;
-    -webkit-text-stroke: 1px var(--primary-sage);
-    text-shadow: 2px 2px 0px var(--primary-sage);
-    letter-spacing: 1px;
-}
+            position: absolute; left: 50%; bottom: 30px; transform: translateX(-50%);
+            width: 80px; height: 80px; background: var(--card-bg); border-radius: 50%;
+            border: 3px solid var(--hover-sage); display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 22px; color: #FFFFFF; -webkit-text-stroke: 1px var(--primary-sage); text-shadow: 2px 2px 0px var(--primary-sage);
+        }
+
+        .turn-indicator {
+            background: var(--primary-sage); color: white; padding: 8px 20px; border-radius: 50px;
+            font-weight: bold; font-size: 14px; border: 2px solid var(--secondary-sand); text-align: center; min-width: 120px;
+        }
 
         .game-title-dash {
-    font-size: 32px; 
-    font-weight: 900;
-    color: #FFFFFF; 
-    margin: 0;
-    transform: rotate(-5deg); 
-    letter-spacing: 2px;
-    
-    /* نستخدم لون الثيم كحد خارجي للنص (Stroke) فقط */
-    -webkit-text-stroke: 1px var(--primary-sage);
-    
-    /* بدل الظلال المتداخلة، نستخدم ظلاً واحداً خفيفاً للعمق */
-    text-shadow: 2px 2px 0px var(--primary-sage);
-}
+            font-size: 32px; font-weight: 900; color: #FFFFFF; margin: 0; transform: rotate(-5deg); letter-spacing: 2px;
+            -webkit-text-stroke: 1px var(--primary-sage); text-shadow: 2px 2px 0px var(--primary-sage);
+        }
 
-.turn-indicator {
-    background: var(--primary-sage);
-    color: white;
-    padding: 8px 25px;
-    border-radius: 50px;
-    font-weight: bold;
-    font-size: 16px;
-    cursor: pointer;
-    border: 2px solid var(--secondary-sand);
-    transition: 0.3s;
-    text-align: center;
-    min-width: 150px;
-}
-.turn-indicator:hover { background: var(--hover-sage); }
+        /* التجاوب الذكي للجوال */
+        @media (max-width: 768px) {
+            .main-container { padding: 15px; width: 95%; margin: 10px auto; }
+            .flex-layout { flex-direction: column; gap: 15px; }
+            .flex-layout-item-1 { max-height: none; width: 100%; }
+            .flex-layout-item-2 { width: 100%; }
+            .teams-layout { flex-direction: column; gap: 15px; }
+            
+            .category-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+            .card { height: 160px; padding: 10px; }
+            .card-img-top { height: 90px; }
+            
+            .selection-bar { flex-direction: row-reverse; padding: 10px; bottom: 10px; width: 95%; gap: 10px; }
+            .start-btn { padding: 10px 20px; font-size: 14px; }
+            
+            #gameDashboard { padding: 10px; }
+            .game-header { 
+                margin-left: -10px; margin-right: -10px; padding-left: 10px; padding-right: 10px; 
+                flex-direction: column; gap: 10px; padding-top: 15px;
+            }
+            .game-header-btns { width: 100%; justify-content: space-between; }
+            .turn-indicator { width: 100%; box-sizing: border-box; }
+            
+            .game-grid { 
+                grid-template-columns: repeat(2, 1fr); /* عمودين مثل اسبقهم */
+                gap: 8px; margin-bottom: 140px; 
+            }
+            .game-card { height: 180px; border-width: 2px; }
+            .card-side button { font-size: 18px; border-bottom-width: 2px; }
+            .border-left-soft { border-left-width: 2px; }
+            .border-right-soft { border-right-width: 2px; }
+            .card-cat-title { font-size: 13px; padding: 5px 0; border-top-width: 2px; }
 
-@media (max-width: 768px) {
-    /* تصغير حجم الخط للأزرار في الجوال */
-    .card-side button {
-        font-size: 18px !important;
-        padding: 5px !important;
-    }
-    
-    /* تصغير عرض البطاقات لتناسب شاشة الجوال */
-    .game-grid {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-     
-    .game-card {
-        width: 95% !important;
-        margin-bottom: 10px;
-    }
-}
-
+            .bottom-bar { 
+                padding: 15px 10px 10px; 
+                align-items: flex-end; 
+                border-top-left-radius: 20px; border-top-right-radius: 20px;
+            }
+            .team-panel { 
+                width: 45%; 
+                flex-direction: column-reverse; 
+                gap: 8px; 
+            }
+            .team-info { width: 100%; gap: 5px; }
+            .score-controls { height: 40px; padding: 0 5px; border-radius: 12px; }
+            .score-controls button { font-size: 22px; padding: 0 5px; }
+            .score-controls span { font-size: 16px; }
+            .team-name-input { padding: 8px; font-size: 13px; border-radius: 12px; }
+            
+            .center-logo { 
+                width: 55px; height: 55px; font-size: 14px; bottom: 35px; border-width: 2px;
+            }
+            .tools-container { gap: 4px; }
+            .tool-icon { width: 28px; height: 28px; font-size: 12px; border-width: 1px; }
+            .tools-grid { grid-template-columns: repeat(2, 1fr); }
+            
+            .game-title { font-size: 55px; }
+        }
     </style>
 </head>
 <body>
@@ -548,7 +322,6 @@
     <h1 class="game-title">فِطنة</h1>
 </div>
 
-<!-- الشاشة الأولى: اختيار الفئات -->
 <div id="categoriesContainer" class="main-container">
     <div class="filter-wrapper">
         <button class="nav-btn" onclick="scrollTags(-200)">&#10095;</button>
@@ -557,7 +330,7 @@
         <div class="fixed-tags">
             <button class="filter-btn" onclick="render('المختارة')">المختارة</button>
             <button class="filter-btn" onclick="render('المفضلة')">المفضلة</button>
-            <button class="filter-btn" onclick="render('الكل')">الكل</button>
+            <button class="filter-btn active" onclick="render('الكل')">الكل</button>
         </div>
     </div>
     
@@ -566,7 +339,7 @@
 </div>
 
 <div id="selectionBar" class="selection-bar">
-   <button class="follow-btn" onclick="goToGameDetails()">متابعة</button>
+   <button class="start-btn" onclick="goToGameDetails()">متابعة</button>
     <div id="selectedContainer" class="selected-container">
         <div class="plus-slot">+</div>
         <div class="plus-slot">+</div>
@@ -577,104 +350,82 @@
     </div>
 </div>
 
-<!-- نافذة الوصف المنبثقة -->
 <div id="modalOverlay" class="modal-overlay">
     <div id="modalContent" class="modal-card"></div>
 </div>
 
-<!-- نافذة عرض السؤال أثناء اللعب -->
 <div id="questionModal" class="modal-overlay">
-    <div class="modal-card" style="width: 80%; max-width: 600px; text-align: center;">
-        <h3 id="qCategory" style="color: var(--primary-sage); font-size: 20px;">اسم الفئة</h3>
+    <div class="modal-card">
+        <h3 id="qCategory" style="color: var(--primary-sage); font-size: 20px; margin-top: 0;">اسم الفئة</h3>
         <h2 id="qPoints" style="color: #cc4444; font-size: 30px; margin: 10px 0;">200</h2>
-        
-        <div id="qText" style="font-size: 24px; margin: 30px 0; font-weight: bold;">
-            نص السؤال يظهر هنا...
-        </div>
-        
+        <div id="qText" style="font-size: 20px; margin: 20px 0; font-weight: bold; white-space: pre-line;">نص السؤال يظهر هنا...</div>
         <p style="font-size: 14px; color: #666; margin-bottom: 20px;">من الفريق الذي أجاب بشكل صحيح؟</p>
-        
-        <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
-            <button class="follow-btn" onclick="awardPoints(1)" id="btnTeam1Ans">الفريق الأول</button>
-            <button class="follow-btn" onclick="awardPoints(2)" id="btnTeam2Ans">الفريق الثاني</button>
+        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap;">
+            <button class="start-btn" onclick="awardPoints(1)" id="btnTeam1Ans">الفريق الأول</button>
+            <button class="start-btn" onclick="awardPoints(2)" id="btnTeam2Ans">الفريق الثاني</button>
         </div>
-        
-        <button class="start-btn" style="background:transparent; color:#666; border:1px solid #ccc; padding: 10px 30px; margin-top: 20px; font-size: 14px;" onclick="closeQuestion()">إلغاء / لم يجب أحد</button>
+        <button class="start-btn" style="background:transparent; color:#666; border:1px solid #ccc; margin-top: 15px; width: 100%;" onclick="closeQuestion()">إلغاء / لم يجب أحد</button>
     </div>
 </div>
 
-<!-- الشاشة الثانية: تفاصيل اللعبة -->
-<div id="gameDetailsContainer" class="main-container" style="display:none; text-align:right; border: 2px solid var(--primary-sage);">
-    <h2 style="text-align:center;">تفاصيل اللعبة</h2>
-    
+<div id="gameDetailsContainer" class="main-container" style="display:none; text-align:right;">
+    <h2 style="text-align:center; color: var(--primary-sage);">تفاصيل اللعبة</h2>
     <div style="margin-bottom:20px;">
-        <label>اسم اللعبة</label>
-        <input type="text" id="gameName" placeholder="أدخل اسم اللعبة" style="width:100%; padding:12px; border-radius:15px; border:1px solid #D5D2C8; margin-top:8px; box-sizing:border-box;">
+        <label style="font-weight: bold;">اسم اللعبة</label>
+        <input type="text" id="gameName" class="team-name-input" placeholder="أدخل اسم اللعبة" style="border: 1px solid #D5D2C8; background: #fff; text-align: right; margin-top: 8px;">
     </div>
-    
     <div style="margin-bottom:20px;">
-        <label>اسم الفريق الأول</label>
-        <input type="text" id="team1Name" placeholder="أدخل اسم الفريق الأول" style="width:100%; padding:12px; border-radius:15px; border:1px solid #D5D2C8; margin-top:8px; box-sizing:border-box;">
+        <label style="font-weight: bold;">اسم الفريق الأول</label>
+        <input type="text" id="team1Name" class="team-name-input" placeholder="أدخل اسم الفريق الأول" style="border: 1px solid #D5D2C8; background: #fff; text-align: right; margin-top: 8px;">
     </div>
-    
     <div style="margin-bottom:20px;">
-        <label>اسم الفريق الثاني</label>
-        <input type="text" id="team2Name" placeholder="أدخل اسم الفريق الثاني" style="width:100%; padding:12px; border-radius:15px; border:1px solid #D5D2C8; margin-top:8px; box-sizing:border-box;">
+        <label style="font-weight: bold;">اسم الفريق الثاني</label>
+        <input type="text" id="team2Name" class="team-name-input" placeholder="أدخل اسم الفريق الثاني" style="border: 1px solid #D5D2C8; background: #fff; text-align: right; margin-top: 8px;">
     </div>
-    
     <div style="display:flex; gap:10px; justify-content:center; margin-top:30px;">
-      <button class="follow-btn" onclick="goToToolsPage()">التالي</button>
-        <button class="start-btn" style="background:transparent; color:var(--primary-sage); border:1px solid var(--primary-sage);" onclick="backToSelection()">رجوع</button>
+      <button class="start-btn" onclick="goToToolsPage()">التالي</button>
+      <button class="start-btn" style="background:transparent; color:var(--primary-sage); border:2px solid var(--primary-sage);" onclick="backToSelection()">رجوع</button>
     </div>
 </div>
 
-<!-- الشاشة الثالثة: اختيار الأدوات -->
-<div id="toolsContainer" class="main-container" style="display:none; border: 2px solid var(--primary-sage); padding: 20px;">
-    <h2 style="text-align:center;">اختر أدوات المساعدة</h2>
-    <p style="text-align:center; color: #666; font-size: 14px;">تقدروا تستخدمون وسائل المساعدة مرة أو أكثر حسب إعداداتكم للجلسة.</p>
+<div id="toolsContainer" class="main-container" style="display:none;">
+    <h2 style="text-align:center; color: var(--primary-sage);">اختر أدوات المساعدة</h2>
+    <p style="text-align:center; color: #666; font-size: 14px; margin-bottom: 25px;">تقدروا تستخدمون وسائل المساعدة مرة أو أكثر حسب إعداداتكم للجلسة.</p>
     
-    <div style="display: flex; gap: 30px; align-items: flex-start;">
-        <div style="flex: 1; background: #EBE9E4; padding: 20px; border-radius: 20px;">
-            <h3>وسائل المساعدة</h3>
+    <div class="flex-layout">
+        <div class="flex-layout-item-1">
+            <h3 style="margin-top: 0;">وسائل المساعدة</h3>
             <div id="toolsDescriptionList"></div>
         </div>
-
-        <div style="flex: 2;">
-            <div id="teamsToolsWrapper" style="display: flex; gap: 20px;">
-                <div class="team-tools" style="background:#EBE9E4; padding:20px; border-radius:20px; flex:1;">
-                    <h3 id="team1Display">الفريق الأول</h3>
-                    <div class="tools-grid-1" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;"></div>
+        <div class="flex-layout-item-2">
+            <div class="teams-layout">
+                <div class="team-tools-box">
+                    <h3 id="team1Display" style="text-align: center; margin-top: 0;">الفريق الأول</h3>
+                    <div class="tools-grid tools-grid-1"></div>
                 </div>
-                <div class="team-tools" style="background:#EBE9E4; padding:20px; border-radius:20px; flex:1;">
-                    <h3 id="team2Display">الفريق الثاني</h3>
-                    <div class="tools-grid-2" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;"></div>
+                <div class="team-tools-box">
+                    <h3 id="team2Display" style="text-align: center; margin-top: 0;">الفريق الثاني</h3>
+                    <div class="tools-grid tools-grid-2"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div style="text-align:center; margin-top:30px;">
-        <button id="createGameBtn" class="follow-btn" onclick="startGame()" disabled style="opacity: 0.5; cursor: not-allowed;">إنشاء اللعبة</button>
-        <button class="start-btn" style="background:transparent; color:var(--primary-sage); border:1px solid var(--primary-sage);" onclick="backToGameDetails()">رجوع</button>
+    <div style="text-align:center; margin-top:30px; display: flex; justify-content: center; gap: 10px;">
+        <button id="createGameBtn" class="start-btn" onclick="startGame()" disabled style="opacity: 0.5; cursor: not-allowed;">إنشاء اللعبة</button>
+        <button class="start-btn" style="background:transparent; color:var(--primary-sage); border:2px solid var(--primary-sage);" onclick="backToGameDetails()">رجوع</button>
     </div>
 </div>
 
-<!-- الشاشة الرابعة: لوحة اللعب -->
 <div id="gameDashboard">
     <div class="game-header">
         <div class="game-header-btns">
             <button style="background: var(--primary-sage);" onclick="exitGame()">خروج ➔</button>
             <button style="background: #cc4444;" onclick="exitGame()">إنهاء ✖</button>
         </div>
-
-        <h2 id="finalGameName" style="margin: 0; font-size: 28px; color: var(--text-color);">اسم اللعبة</h2>
-
-<div id="turnIndicator" class="turn-indicator" onclick="switchTurn()">
-        جاري تحديد الدور...
-    </div>
-
-        <!-- استبدل سطر "فِطنة" القديم بهذا السطر -->
-<div class="game-title-dash">فِطنة</div>
+        <h2 id="finalGameName" style="margin: 0; font-size: 22px; color: var(--text-color);">اسم اللعبة</h2>
+        <div id="turnIndicator" class="turn-indicator" onclick="switchTurn()">جاري تحديد الدور...</div>
+        <div class="game-title-dash">فِطنة</div>
     </div>
 
     <div id="questionsGrid" class="game-grid"></div>
@@ -710,7 +461,7 @@
 
 <script>
 // ==========================================
-// 1. المتغيرات وإدارة الشاشات (State Management)
+// 1. المتغيرات وإدارة الشاشات
 // ==========================================
 let currentStep = 'categories'; 
 let currentActiveTag = "الكل"; 
@@ -719,129 +470,73 @@ let selectedToolsTeam1 = [];
 let selectedToolsTeam2 = [];
 let currentQuestion = { points: 0, btnRef: null };
 let scores = { team1: 0, team2: 0 };
+let currentTurn = 1;
 
-// دالة ذكية لإظهار وإخفاء الشاشات
 function showScreen(screenId) {
     const mainLogo = document.querySelector('.logo-container');
-    
-    // إخفاء كل شيء أولاً
     document.getElementById('categoriesContainer').style.display = 'none';
     document.getElementById('selectionBar').style.display = 'none';
     document.getElementById('gameDetailsContainer').style.display = 'none';
     document.getElementById('toolsContainer').style.display = 'none';
     document.getElementById('gameDashboard').style.display = 'none';
-
-    // التحكم بالشعار الكبير
-    if (screenId === 'game') {
-        if (mainLogo) mainLogo.style.display = 'none';
-    } else {
+    
+    if (screenId === 'game') { 
+        if (mainLogo) mainLogo.style.display = 'none'; 
+    } else { 
         if (mainLogo) mainLogo.style.display = 'flex'; 
     }
-
-    // إظهار الشاشة المطلوبة
-    if (screenId === 'categories') {
-        document.getElementById('categoriesContainer').style.display = 'block';
-        document.getElementById('selectionBar').style.display = 'flex';
-    } else if (screenId === 'details') {
-        document.getElementById('gameDetailsContainer').style.display = 'block';
-    } else if (screenId === 'tools') {
-        document.getElementById('toolsContainer').style.display = 'block';
-    } else if (screenId === 'game') {
-        document.getElementById('gameDashboard').style.display = 'block';
-    }
     
+    if (screenId === 'categories') { 
+        document.getElementById('categoriesContainer').style.display = 'block'; 
+        document.getElementById('selectionBar').style.display = 'flex'; 
+    } 
+    else if (screenId === 'details') { document.getElementById('gameDetailsContainer').style.display = 'block'; } 
+    else if (screenId === 'tools') { document.getElementById('toolsContainer').style.display = 'block'; } 
+    else if (screenId === 'game') { document.getElementById('gameDashboard').style.display = 'block'; }
     currentStep = screenId;
 }
 
-// ==========================================
-// 2. دوال الحفظ والاسترجاع (المسودة واللعبة)
-// ==========================================
 function saveDraftState() {
-    if (currentStep === 'game') return; // لا يحفظ المسودة إذا بدأت اللعبة
-    
-    const draft = {
-        step: currentStep, 
-        gameName: document.getElementById('gameName').value,
-        team1Name: document.getElementById('team1Name').value,
-        team2Name: document.getElementById('team2Name').value,
-        tools1: selectedToolsTeam1,
-        tools2: selectedToolsTeam2
-    };
+    if (currentStep === 'game') return;
+    const draft = { step: currentStep, gameName: document.getElementById('gameName').value, team1Name: document.getElementById('team1Name').value, team2Name: document.getElementById('team2Name').value, tools1: selectedToolsTeam1, tools2: selectedToolsTeam2 };
     localStorage.setItem('fitnahSetupDraft', JSON.stringify(draft));
 }
 
 function restoreDraftState() {
-    if (localStorage.getItem('fitnahActiveSession')) return; 
-
+    if (localStorage.getItem('fitnahActiveSession')) return;
     const draftDataStr = localStorage.getItem('fitnahSetupDraft');
     if (draftDataStr) {
         const draft = JSON.parse(draftDataStr);
-        
         if (draft.gameName) document.getElementById('gameName').value = draft.gameName;
         if (draft.team1Name) document.getElementById('team1Name').value = draft.team1Name;
         if (draft.team2Name) document.getElementById('team2Name').value = draft.team2Name;
-        
         if (draft.tools1) selectedToolsTeam1 = draft.tools1;
         if (draft.tools2) selectedToolsTeam2 = draft.tools2;
-        
-        if (draft.step) {
-            showScreen(draft.step);
-            if (draft.step === 'tools') {
-                syncToolsUI(); // تحديث الألوان لتطابق الذاكرة
-            }
-        }
+        if (draft.step) { showScreen(draft.step); if (draft.step === 'tools') { syncToolsUI(); } }
     }
 }
 
-// حفظ النصوص تلقائياً وقت الكتابة
 document.getElementById('gameName').addEventListener('input', saveDraftState);
 document.getElementById('team1Name').addEventListener('input', saveDraftState);
 document.getElementById('team2Name').addEventListener('input', saveDraftState);
 
-// ==========================================
-// 3. التنقل بين الشاشات
-// ==========================================
-function goToGameDetails() {
-    if (selectedCategories.length < 6) {
-        alert("يرجى اختيار 6 فئات للبدء!");
-        return;
-    }
-    showScreen('details');
-    saveDraftState();
-}
-
-function backToSelection() {
-    showScreen('categories');
-    saveDraftState();
-}
-
+function goToGameDetails() { if (selectedCategories.length < 6) { alert("يرجى اختيار 6 فئات للبدء!"); return; } showScreen('details'); saveDraftState(); }
+function backToSelection() { showScreen('categories'); saveDraftState(); }
 function goToToolsPage() {
     const gameName = document.getElementById('gameName').value;
-    if (!gameName) {
-        alert("يرجى إدخال اسم اللعبة!");
-        return;
-    }
-
-    // تحديث أسماء الفرق في شاشة الأدوات
+    if (!gameName) { alert("يرجى إدخال اسم اللعبة!"); return; }
     const t1Name = document.getElementById('team1Name').value || "الفريق الأول";
     const t2Name = document.getElementById('team2Name').value || "الفريق الثاني";
     const team1Title = document.getElementById('team1Display');
     const team2Title = document.getElementById('team2Display');
-    
     if(team1Title) team1Title.innerText = t1Name;
     if(team2Title) team2Title.innerText = t2Name;
-
-    showScreen('tools');
-    saveDraftState();
+    showScreen('tools'); saveDraftState();
 }
-
-function backToGameDetails() {
-    showScreen('details');
-    saveDraftState();
-}
+function backToGameDetails() { showScreen('details'); saveDraftState(); }
 
 // ==========================================
-// 4. قاعدة البيانات واختيار الفئات
+// 2. قاعدة البيانات الكاملة بدون استثناءات
 // ==========================================
 const db = {
     categories: [
@@ -862,7 +557,7 @@ const db = {
         { name: "إسلامي", tag: "إسلاميات", desc: "أسئلة متنوعة حول الدين الإسلامي والمعرفة العامة." },
         { name: "القرآن", tag: "إسلاميات", desc: "اختبر معلوماتك في علوم القرآن الكريم وآياته." },
         { name: "لغة وأدب", tag: "علم", desc: "لمحبي اللغة العربية، الشعر، والقواعد." },
-        { name: "عالم الشعر", tag: "أمثال", desc: "هل تعرف قائلي الأبيات وقصص القصائد؟" },
+        { name: "عالم الشعر", tag: "أمثال", desc: "هل تعرف قائلي الأبيات وقصص القصائد?" },
         { name: "تاريخ", tag: "تاريخ", desc: "رحلة عبر الزمن لاختبار معلوماتك التاريخية." },
         { name: "معلومات عامة", tag: "عام", desc: "كوكتيل من الأسئلة في شتى مجالات المعرفة." },
         { name: "علوم", tag: "علوم", desc: "اكتشف معلوماتك في الفيزياء، الكيمياء، والأحياء." },
@@ -882,7 +577,7 @@ const db = {
         { name: "الشرقية", tag: "جغرافيا", desc: "اكتشف معلومات عن المنطقة الشرقية ومعالمها." },
         { name: "طب عام", tag: "علوم", desc: "أسئلة مبسطة عن جسم الإنسان والصحة العامة." },
         { name: "طب الأسنان", tag: "علوم", desc: "معلومات وتحديات عن صحة الفم والأسنان." },
-        { name: "لغز ومثل", tag: "ألغاز", desc: "اختبر ذكاءك في حل الألغاز وإكمال الأمثال الشعبية." },
+        { name: "لغز ومثل", tag: "ألغاز", desc: "اختبر ذكاءءك في حل الألغاز وإكمال الأمثال الشعبية." },
         { name: "فن خليجي", tag: "مقاطع فيديو", desc: "كل ما يخص نجوم وأعمال الفن الخليجي." },
         { name: "مقاطع فن خليجي", tag: "مقاطع فيديو", desc: "خمن المسلسل أو الممثل من مقطع صغير." },
         { name: "مقاطع فن عربي", tag: "مقاطع فيديو", desc: "تحديات فنية من السينما والدراما العربية." },
@@ -953,140 +648,7 @@ const filterTypes = ["رياضة", "تاريخ", "جغرافيا", "علوم", "
                      "مقاطع فيديو", "مسلسلات خليجية", "مسلسلات عربية", "أفلام عربية", "صوتيات", 
                      "مسلسلات أجنبية", "أفلام أجنبية", "مؤثرين", "اسم لاعب", "سبيستون", "دوريات", "Esports"];
 
-function toggleSelection(catName) {
-    if (selectedCategories.includes(catName)) {
-        selectedCategories = selectedCategories.filter(item => item !== catName);
-    } else if (selectedCategories.length < 6) {
-        selectedCategories.push(catName);
-    } else {
-        alert("لا يمكنك اختيار أكثر من 6 فئات!");
-        return;
-    }
-    
-    localStorage.setItem('selectedCategories', JSON.stringify(selectedCategories)); 
-    updateSelectionBar();
-    render(currentActiveTag); 
-}
-    
-function updateSelectionBar() {
-    const container = document.getElementById('selectedContainer');
-    container.innerHTML = "";
-    
-    selectedCategories.forEach(cat => {
-        container.innerHTML += `
-            <div class="selected-item-wrapper" style="position:relative; display:inline-block;">
-                <img src="images/${cat}.png" class="selected-item" onerror="this.style.display='none'">
-                <span onclick="toggleSelection('${cat}')" style="position:absolute; top:-5px; right:-5px; background:red; color:white; border-radius:50%; width:15px; height:15px; font-size:10px; cursor:pointer; display:flex; align-items:center; justify-content:center;">X</span>
-            </div>
-        `;
-    });
-    
-    for (let i = selectedCategories.length; i < 6; i++) {
-        container.innerHTML += `<div class="plus-slot">+</div>`;
-    }
-}
-
-function initFilterBar() {
-    const bar = document.getElementById('scrollableTags');
-    bar.innerHTML = ""; 
-    filterTypes.forEach(t => {
-        bar.innerHTML += `<button class="filter-btn" onclick="render('${t}')">${t}</button>`;
-    });
-}
-
-function render(tag = "الكل") {
-    currentActiveTag = tag;
-    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-    const grid = document.getElementById('categoryGrid');
-    
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        if(btn.innerText === tag) btn.classList.add('active');
-    });
-    grid.innerHTML = "";
-
-    let data = [];
-    if (tag === "الكل") {
-        data = db.categories;
-    } else if (tag === "المفضلة") {
-        const favNames = JSON.parse(localStorage.getItem('favorites')) || [];
-        data = db.categories.filter(c => favNames.includes(c.name));
-    } else if (tag === "المختارة") {
-        data = db.categories.filter(c => selectedCategories.includes(c.name));
-    } else {
-        data = db.categories.filter(c => c.tag === tag);
-    }
-
-    data.forEach(cat => {
-        const isFav = JSON.parse(localStorage.getItem('favorites') || '[]').includes(cat.name);
-        const div = document.createElement('div');
-        div.className = 'card';
-        
-        const isSelected = selectedCategories.includes(cat.name);
-        if (isSelected) {
-            div.style.border = "3px solid #7C876A";
-        }
-        if (selectedCategories.length >= 6 && !isSelected) {
-            div.style.opacity = "0.5";
-            div.style.filter = "grayscale(100%)";
-            div.style.pointerEvents = "none";
-        }
-
-        div.onclick = () => toggleSelection(cat.name);
-        div.innerHTML = `
-            <div class="card-img-top" style="position:relative;">
-                <img src="images/${cat.name}.png" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;" onerror="this.style.display='none'">
-                <div class="card-actions" style="position:absolute; top:5px; left:5px; display:flex; gap:5px; z-index:10;">
-                    <span onclick="event.stopPropagation(); openModal('${cat.name}')" style="background:#F8F7F3; border-radius:50%; width:30px; height:30px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px;">ⓘ</span>
-                    <span onclick="event.stopPropagation(); toggleFav('${cat.name}', this)" style="background:#F8F7F3; border-radius:50%; width:30px; height:30px; display:flex; align-items:center; justify-content:center; cursor:pointer; color: ${isFav ? '#d68f8f' : '#ccc'};">♥</span>
-                </div>
-                <span class="badge-new">جديد</span>
-            </div>
-            <div class="card-title">${cat.name}</div>
-        `;
-        grid.appendChild(div);
-    });
-}
-
-function openModal(name) {
-    const category = db.categories.find(c => c.name === name);
-    const modal = document.getElementById('modalOverlay');
-    modal.style.display = 'flex';
-    document.getElementById('modalContent').innerHTML = `
-        <span class="close-modal" onclick="closeModal()">✕</span>
-        <img src="images/${name}.png" class="modal-img" onerror="this.style.display='none'">
-        <h2 style="color:#7C876A;">${name}</h2>
-        <p>${category ? category.desc : "استكشف هذه الفئة واستمتع بالتحدي!"}</p>
-    `;
-}
-
-function closeModal() { 
-    document.getElementById('modalOverlay').style.display = 'none'; 
-}
-
-function toggleFav(name, element) {
-    let favorites = JSON.parse(localStorage.getItem('favorites') || '[]'); 
-    const index = favorites.indexOf(name); 
-
-    if (index > -1) {
-        favorites.splice(index, 1);
-        element.style.color = "#ccc"; 
-    } else {
-        favorites.push(name);
-        element.style.color = "#ff4d4d"; 
-    }
-    
-    localStorage.setItem('favorites', JSON.stringify(favorites));
-    render(currentActiveTag); 
-}
-
-function scrollTags(amount) {
-    const bar = document.getElementById('scrollableTags');
-    bar.scrollBy({ left: amount, behavior: 'smooth' });
-}
-
-// ==========================================
-// 5. أدوات المساعدة (مزامنة خالية من الأخطاء)
-// ==========================================
+// وسائل المساعدة كاملة (الـ 7 أدوات)
 const toolsData = [
     { name: "الروليت", icon: "❄️", desc: "شوف حظك وين يودي فريقك" },
     { name: "اتصل بصديق", icon: "📞", desc: "اتصل بصديق للمساعدة في الإجابة" },
@@ -1097,376 +659,243 @@ const toolsData = [
     { name: "ابحث", icon: "🔍", desc: "عندك 15 ثانية تبحث عن الإجابة من أي مكان" }
 ];
 
-function initTools() {
-    const grid1 = document.querySelector('.tools-grid-1');
-    const grid2 = document.querySelector('.tools-grid-2');
+function toggleSelection(catName) {
+    if (selectedCategories.includes(catName)) { 
+        selectedCategories = selectedCategories.filter(item => item !== catName); 
+    } else if (selectedCategories.length < 6) { 
+        selectedCategories.push(catName); 
+    } else { 
+        alert("لا يمكنك اختيار أكثر من 6 فئات!"); 
+        return; 
+    }
+    localStorage.setItem('selectedCategories', JSON.stringify(selectedCategories)); 
+    updateSelectionBar(); 
+    render(currentActiveTag); 
+}
     
-    if(!grid1 || !grid2) return;
-    grid1.innerHTML = "";
-    grid2.innerHTML = "";
+function updateSelectionBar() {
+    const container = document.getElementById('selectedContainer'); container.innerHTML = "";
+    selectedCategories.forEach(cat => {
+        container.innerHTML += `<div style="position:relative; display:inline-block;"><img src="images/${cat}.png" class="selected-item" onerror="this.style.display='none'"><span onclick="toggleSelection('${cat}')" style="position:absolute; top:-2px; right:-2px; background:red; color:white; border-radius:50%; width:16px; height:16px; font-size:10px; cursor:pointer; display:flex; align-items:center; justify-content:center;">X</span></div>`;
+    });
+    for (let i = selectedCategories.length; i < 6; i++) { container.innerHTML += `<div class="plus-slot">+</div>`; }
+}
 
+function initFilterBar() {
+    const bar = document.getElementById('scrollableTags'); bar.innerHTML = ""; 
+    filterTypes.forEach(t => { bar.innerHTML += `<button class="filter-btn" onclick="render('${t}')">${t}</button>`; });
+}
+
+function render(tag = "الكل") {
+    currentActiveTag = tag;
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    const grid = document.getElementById('categoryGrid');
+    document.querySelectorAll('.filter-btn').forEach(btn => { if(btn.innerText === tag) btn.classList.add('active'); });
+    grid.innerHTML = "";
+    
+    let data = [];
+    if (tag === "الكل") { data = db.categories; } 
+    else if (tag === "المفضلة") { const favNames = JSON.parse(localStorage.getItem('favorites')) || []; data = db.categories.filter(c => favNames.includes(c.name)); } 
+    else if (tag === "المختارة") { data = db.categories.filter(c => selectedCategories.includes(c.name)); } 
+    else { data = db.categories.filter(c => c.tag === tag); }
+    
+    data.forEach(cat => {
+        const isFav = JSON.parse(localStorage.getItem('favorites') || '[]').includes(cat.name);
+        const div = document.createElement('div'); div.className = 'card';
+        const isSelected = selectedCategories.includes(cat.name);
+        if (isSelected) { div.style.border = "3px solid #7C876A"; }
+        if (selectedCategories.length >= 6 && !isSelected) { div.style.opacity = "0.5"; div.style.filter = "grayscale(100%)"; div.style.pointerEvents = "none"; }
+        
+        div.onclick = () => toggleSelection(cat.name);
+        div.innerHTML = `
+            <div class="card-img-top"><img src="images/${cat.name}.png" style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'">
+            <div style="position:absolute; top:5px; left:5px; display:flex; gap:5px; z-index:10;">
+                <span onclick="event.stopPropagation(); openModal('${cat.name}')" style="background:#F8F7F3; border-radius:50%; width:30px; height:30px; display:flex; align-items:center; justify-content:center; cursor:pointer;">ⓘ</span>
+                <span onclick="event.stopPropagation(); toggleFav('${cat.name}', this)" style="background:#F8F7F3; border-radius:50%; width:30px; height:30px; display:flex; align-items:center; justify-content:center; cursor:pointer; color: ${isFav ? '#cc4444' : '#ccc'};">♥️</span>
+            </div></div><div class="card-title">${cat.name}</div>`;
+        grid.appendChild(div);
+    });
+}
+
+function openModal(name) {
+    const category = db.categories.find(c => c.name === name);
+    document.getElementById('modalOverlay').style.display = 'flex';
+    document.getElementById('modalContent').innerHTML = `<span class="close-modal" onclick="closeModal()">✕</span><img src="images/${name}.png" class="modal-img" onerror="this.style.display='none'"><h2 style="color:#7C876A;">${name}</h2><p>${category ? category.desc : "استكشف هذه الفئة واستمتع بالتحدي!"}</p>`;
+}
+function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
+
+function toggleFav(name, element) {
+    let favorites = JSON.parse(localStorage.getItem('favorites') || '[]'); 
+    const index = favorites.indexOf(name); 
+    if (index > -1) { favorites.splice(index, 1); element.style.color = "#ccc"; } else { favorites.push(name); element.style.color = "#cc4444"; }
+    localStorage.setItem('favorites', JSON.stringify(favorites)); render(currentActiveTag); 
+}
+
+function scrollTags(amount) { document.getElementById('scrollableTags').scrollBy({ left: amount, behavior: 'smooth' }); }
+
+function initTools() {
+    const grid1 = document.querySelector('.tools-grid-1'); const grid2 = document.querySelector('.tools-grid-2');
+    if(!grid1 || !grid2) return; grid1.innerHTML = ""; grid2.innerHTML = "";
+    
     toolsData.forEach(tool => {
-        // فريق 1
-        const div1 = document.createElement('div');
-        div1.className = 'tool-item';
-        div1.dataset.tool = tool.name; // ربط ذكي بالاسم
-        div1.innerHTML = `
-            <div style="font-size: 24px; margin-bottom: 5px; display: flex; justify-content: center;">${tool.icon}</div>
-            <div style="font-weight: bold; font-size: 14px; margin-bottom: 3px; color: var(--text-color);">${tool.name}</div>
-            <div style="font-size: 10px; color: #A0A0A0; line-height: 1.2; font-family: 'Cairo';">${tool.desc}</div>
-        `;
-        div1.onclick = () => toggleTool(1, tool.name);
-        grid1.appendChild(div1);
-
-        // فريق 2
-        const div2 = document.createElement('div');
-        div2.className = 'tool-item';
-        div2.dataset.tool = tool.name; // ربط ذكي بالاسم
-        div2.innerHTML = `
-            <div style="font-size: 24px; margin-bottom: 5px; display: flex; justify-content: center;">${tool.icon}</div>
-            <div style="font-weight: bold; font-size: 14px; margin-bottom: 3px; color: var(--text-color);">${tool.name}</div>
-            <div style="font-size: 10px; color: #A0A0A0; line-height: 1.2; font-family: 'Cairo';">${tool.desc}</div>
-        `;
-        div2.onclick = () => toggleTool(2, tool.name);
-        grid2.appendChild(div2);
+        const div1 = document.createElement('div'); div1.className = 'tool-item'; div1.dataset.tool = tool.name;
+        div1.innerHTML = `<div style="font-size:22px; margin-bottom:3px;">${tool.icon}</div><div style="font-weight:bold; font-size:11px; color:inherit; line-height:1.2;">${tool.name}</div>`;
+        div1.onclick = () => toggleTool(1, tool.name); grid1.appendChild(div1);
+        
+        const div2 = document.createElement('div'); div2.className = 'tool-item'; div2.dataset.tool = tool.name;
+        div2.innerHTML = `<div style="font-size:22px; margin-bottom:3px;">${tool.icon}</div><div style="font-weight:bold; font-size:11px; color:inherit; line-height:1.2;">${tool.name}</div>`;
+        div2.onclick = () => toggleTool(2, tool.name); grid2.appendChild(div2);
     });
 }
 
 function toggleTool(teamId, toolName) {
     let list = (teamId === 1) ? selectedToolsTeam1 : selectedToolsTeam2;
-    
-    if (list.includes(toolName)) {
-        list.splice(list.indexOf(toolName), 1);
-    } else if (list.length < 3) {
-        list.push(toolName);
-    } else {
-        return; 
-    }
-    
-    syncToolsUI(); 
-    saveDraftState(); 
+    if (list.includes(toolName)) { list.splice(list.indexOf(toolName), 1); } else if (list.length < 3) { list.push(toolName); } else { return; }
+    syncToolsUI(); saveDraftState(); 
 }
 
-// دالة تزامن وتحدث الألوان بشكل مستمر بدون تعليق
 function syncToolsUI() {
-    const grid1Items = document.querySelectorAll('.tools-grid-1 .tool-item');
-    const grid2Items = document.querySelectorAll('.tools-grid-2 .tool-item');
-    
-    // تحديث فريق 1
-    grid1Items.forEach(item => {
-        if (selectedToolsTeam1.includes(item.dataset.tool)) item.classList.add('active');
-        else item.classList.remove('active');
-    });
-    // تحديث فريق 2
-    grid2Items.forEach(item => {
-        if (selectedToolsTeam2.includes(item.dataset.tool)) item.classList.add('active');
-        else item.classList.remove('active');
-    });
-    
-    updateToolsState(1);
-    updateToolsState(2);
-    checkValidation();
+    document.querySelectorAll('.tools-grid-1 .tool-item').forEach(item => { if (selectedToolsTeam1.includes(item.dataset.tool)) item.classList.add('active'); else item.classList.remove('active'); });
+    document.querySelectorAll('.tools-grid-2 .tool-item').forEach(item => { if (selectedToolsTeam2.includes(item.dataset.tool)) item.classList.add('active'); else item.classList.remove('active'); });
+    updateToolsState(1); updateToolsState(2); checkValidation();
 }
 
 function updateToolsState(teamId) {
-    const grid = document.querySelector(teamId === 1 ? '.tools-grid-1' : '.tools-grid-2');
-    const items = grid.querySelectorAll('.tool-item');
     let list = (teamId === 1) ? selectedToolsTeam1 : selectedToolsTeam2;
-    
-    items.forEach(item => {
-        if (list.length >= 3 && !item.classList.contains('active')) {
-            item.classList.add('disabled');
-        } else {
-            item.classList.remove('disabled');
-        }
+    document.querySelector(teamId === 1 ? '.tools-grid-1' : '.tools-grid-2').querySelectorAll('.tool-item').forEach(item => {
+        if (list.length >= 3 && !item.classList.contains('active')) item.classList.add('disabled'); else item.classList.remove('disabled');
     });
 }
 
 function checkValidation() {
-    const btn = document.getElementById('createGameBtn');
-    if (!btn) return;
-    
-    if (selectedToolsTeam1.length === 3 && selectedToolsTeam2.length === 3) {
-        btn.disabled = false;
-        btn.style.opacity = "1";
-        btn.style.cursor = "pointer";
-    } else {
-        btn.disabled = true;
-        btn.style.opacity = "0.5";
-        btn.style.cursor = "not-allowed";
-    }
+    const btn = document.getElementById('createGameBtn'); if (!btn) return;
+    if (selectedToolsTeam1.length === 3 && selectedToolsTeam2.length === 3) { btn.disabled = false; btn.style.opacity = "1"; btn.style.cursor = "pointer"; } else { btn.disabled = true; btn.style.opacity = "0.5"; btn.style.cursor = "not-allowed"; }
 }
 
 function initDescriptions() {
-    const descList = document.getElementById('toolsDescriptionList');
-    descList.innerHTML = "";
-    toolsData.forEach(tool => {
-        descList.innerHTML += `
-            <div style="margin-bottom: 15px; border-bottom: 1px solid #ccc; padding-bottom: 5px;">
-                <strong style="color: var(--primary-sage);">${tool.icon} ${tool.name}</strong>
-                <p style="font-size: 12px; margin: 5px 0;">${tool.desc}</p>
-            </div>
-        `;
-    });
+    const descList = document.getElementById('toolsDescriptionList'); descList.innerHTML = "";
+    toolsData.forEach(tool => { descList.innerHTML += `<div style="margin-bottom:12px; border-bottom:1px solid #ccc; padding-bottom:5px;"><strong style="color:var(--primary-sage);">${tool.icon} ${tool.name}</strong><p style="font-size:11px; margin:4px 0; line-height:1.3;">${tool.desc}</p></div>`; });
 }
 
-// ==========================================
-// 6. دوال واجهة اللعبة (لوحة اللعب النهائية)
-// ==========================================
 function initGameDashboard() {
-    const grid = document.getElementById('questionsGrid');
-    grid.innerHTML = "";
-    
-    let t1Name = document.getElementById('team1Name').value || "الفريق الأول";
-    let t2Name = document.getElementById('team2Name').value || "الفريق الثاني";
-    
+    const grid = document.getElementById('questionsGrid'); grid.innerHTML = "";
+    let t1Name = document.getElementById('team1Name').value || "الفريق الأول"; let t2Name = document.getElementById('team2Name').value || "الفريق الثاني";
     document.getElementById('finalGameName').innerText = document.getElementById('gameName').value || "اسم اللعبة";
-    document.getElementById('t1Display').value = t1Name;
-    document.getElementById('t2Display').value = t2Name;
-    
-    const btn1 = document.getElementById('btnTeam1Ans');
-    const btn2 = document.getElementById('btnTeam2Ans');
-    if(btn1) btn1.innerText = t1Name;
-    if(btn2) btn2.innerText = t2Name;
+    document.getElementById('t1Display').value = t1Name; document.getElementById('t2Display').value = t2Name;
+    if(document.getElementById('btnTeam1Ans')) document.getElementById('btnTeam1Ans').innerText = t1Name;
+    if(document.getElementById('btnTeam2Ans')) document.getElementById('btnTeam2Ans').innerText = t2Name;
 
     selectedCategories.forEach(cat => {
-        const col = document.createElement('div');
-        col.className = 'game-card';
+        const col = document.createElement('div'); col.className = 'game-card';
         col.innerHTML = `
-    <div class="card-side border-left-soft">
-        <button id="left_${cat}_200" onclick="openQuestion('${cat}', 200, this)">200</button>
-        <button id="left_${cat}_400" onclick="openQuestion('${cat}', 400, this)">400</button>
-        <button id="left_${cat}_600" onclick="openQuestion('${cat}', 600, this)">600</button>
-    </div>
-            
+            <div class="card-side border-left-soft">
+                <button id="left_${cat}_200" onclick="openQuestion('${cat}', 200, this)">200</button>
+                <button id="left_${cat}_400" onclick="openQuestion('${cat}', 400, this)">400</button>
+                <button id="left_${cat}_600" onclick="openQuestion('${cat}', 600, this)">600</button>
+            </div>
             <div class="card-center">
-        <div class="card-image-container" style="background-image: url('images/${cat}.png');">
-            <div style="opacity:0.2; font-weight:bold; font-size: 20px; color: var(--primary-sage);">${cat}</div>
-        </div>
-        <div class="card-cat-title">${cat}</div>
-    </div>
-
-    <div class="card-side border-right-soft">
-        <button id="right_${cat}_200" onclick="openQuestion('${cat}', 200, this)">200</button>
-        <button id="right_${cat}_400" onclick="openQuestion('${cat}', 400, this)">400</button>
-        <button id="right_${cat}_600" onclick="openQuestion('${cat}', 600, this)">600</button>
-    </div>
-`;
+                <div class="card-image-container" style="background-image: url('images/${cat}.png');"><div style="opacity:0.2; font-weight:bold; font-size:20px; color:var(--primary-sage);">${cat}</div></div>
+                <div class="card-cat-title">${cat}</div>
+            </div>
+            <div class="card-side border-right-soft">
+                <button id="right_${cat}_200" onclick="openQuestion('${cat}', 200, this)">200</button>
+                <button id="right_${cat}_400" onclick="openQuestion('${cat}', 400, this)">400</button>
+                <button id="right_${cat}_600" onclick="openQuestion('${cat}', 600, this)">600</button>
+            </div>`;
         grid.appendChild(col);
     });
-
-    renderToolsInBottomBar(1);
-    renderToolsInBottomBar(2);
+    renderToolsInBottomBar(1); renderToolsInBottomBar(2);
 }
 
 function renderToolsInBottomBar(teamId) {
     const container = document.getElementById(teamId === 1 ? 't1Tools' : 't2Tools');
-    const toolsList = teamId === 1 ? selectedToolsTeam1 : selectedToolsTeam2;
     container.innerHTML = '';
-    
-    toolsList.forEach(toolName => {
+    (teamId === 1 ? selectedToolsTeam1 : selectedToolsTeam2).forEach(toolName => {
         const toolData = toolsData.find(t => t.name === toolName);
-        if (toolData) {
-            container.innerHTML += `<div class="tool-icon" title="${toolData.name}">${toolData.icon}</div>`;
-        }
+        if (toolData) container.innerHTML += `<div class="tool-icon" title="${toolData.name}">${toolData.icon}</div>`;
     });
 }
 
-function getQuestionText(category, points) {
-    return `سؤال افتراضي بـ ${points} نقطة في قسم ${category}. \n(سيتم إضافة الأسئلة الحقيقية لاحقاً)`;
-}
-
 function openQuestion(category, points, btnElement) {
-    currentQuestion.points = points;
-    currentQuestion.btnRef = btnElement;
-
+    currentQuestion = { points: points, btnRef: btnElement };
     document.getElementById('qCategory').innerText = category;
     document.getElementById('qPoints').innerText = points + " نقطة";
-    document.getElementById('qText').innerText = getQuestionText(category, points);
-
+    document.getElementById('qText').innerText = `سؤال افتراضي بـ ${points} نقطة في قسم ${category}.\n(سيتم إضافة الأسئلة الحقيقية لاحقاً)`;
     document.getElementById('questionModal').style.display = 'flex';
 }
 
-function closeQuestion() {
-    document.getElementById('questionModal').style.display = 'none';
-    currentQuestion = { points: 0, btnRef: null };
-}
+function closeQuestion() { document.getElementById('questionModal').style.display = 'none'; currentQuestion = { points: 0, btnRef: null }; }
 
 function awardPoints(teamNumber) {
-
-// إضافة حفظ السؤال الملعوب
-    // احفظ الـ id الخاص بالزر الحالي (بافتراض أن currentQuestion.btnRef هو الزر نفسه)
     let playedQuestions = JSON.parse(localStorage.getItem('playedQuestions')) || [];
-    playedQuestions.push(currentQuestion.btnRef.id); // هنا حفظنا الـ id
+    playedQuestions.push(currentQuestion.btnRef.id);
     localStorage.setItem('playedQuestions', JSON.stringify(playedQuestions));
 
-    if (teamNumber === 1) {
-        scores.team1 += currentQuestion.points;
-        document.getElementById('score1').innerText = scores.team1;
-    } else {
-        scores.team2 += currentQuestion.points;
-        document.getElementById('score2').innerText = scores.team2;
-    }
+    if (teamNumber === 1) { scores.team1 += currentQuestion.points; document.getElementById('score1').innerText = scores.team1; } 
+    else { scores.team2 += currentQuestion.points; document.getElementById('score2').innerText = scores.team2; }
 
     if (currentQuestion.btnRef) {
-        currentQuestion.btnRef.disabled = true;
-        currentQuestion.btnRef.style.background = '#EBE9E4';
-        currentQuestion.btnRef.style.color = '#ccc';
-        currentQuestion.btnRef.style.borderColor = '#EBE9E4';
-        currentQuestion.btnRef.style.cursor = 'not-allowed';
-        currentQuestion.btnRef.innerText = "✓";
+        currentQuestion.btnRef.disabled = true; currentQuestion.btnRef.style.background = '#EBE9E4';
+        currentQuestion.btnRef.style.color = '#ccc'; currentQuestion.btnRef.style.borderColor = '#EBE9E4';
+        currentQuestion.btnRef.style.cursor = 'not-allowed'; currentQuestion.btnRef.innerText = "✓";
     }
-    saveGameState();
-    
-    // إضافة السطر الجديد هنا للتبديل التلقائي:
-    switchTurn(); 
-    
-    closeQuestion();
+    saveGameState(); switchTurn(); closeQuestion();
 }
 
 function manualScoreChange(teamNumber, amount) {
-    if (teamNumber === 1) {
-        scores.team1 += amount;
-        document.getElementById('score1').innerText = scores.team1;
-    } else {
-        scores.team2 += amount;
-        document.getElementById('score2').innerText = scores.team2;
-    }
+    if (teamNumber === 1) { scores.team1 += amount; document.getElementById('score1').innerText = scores.team1; } 
+    else { scores.team2 += amount; document.getElementById('score2').innerText = scores.team2; }
     saveGameState();
 }
 
 function startGame() {
-    // 1. هنا الكود الخاص بك الذي ينقل الأسماء من حقول الإدخال إلى t1Display و t2Display
     document.getElementById('t1Display').value = document.getElementById('team1Name').value;
     document.getElementById('t2Display').value = document.getElementById('team2Name').value;
-
-    // 2. هنا نقوم بإظهار لوحة اللعب (gameDashboard)
-    document.getElementById('gameDetailsContainer').style.display = 'none';
-    document.getElementById('gameDashboard').style.display = 'block';
-
-    initGameTurn(); 
-    showScreen('game');
-    initGameDashboard();
-    saveGameState();
-    
+    initGameTurn(); showScreen('game'); initGameDashboard(); saveGameState();
 }
 
 function saveGameState() {
-    const gameData = {
-        isPlaying: true,
-        gameName: document.getElementById('gameName').value,
-        team1Name: document.getElementById('team1Name').value,
-        team2Name: document.getElementById('team2Name').value,
-        team1Tools: selectedToolsTeam1,
-        team2Tools: selectedToolsTeam2,
-        scores: scores
-    };
-    localStorage.setItem('fitnahActiveSession', JSON.stringify(gameData));
+    localStorage.setItem('fitnahActiveSession', JSON.stringify({ isPlaying: true, gameName: document.getElementById('gameName').value, team1Name: document.getElementById('team1Name').value, team2Name: document.getElementById('team2Name').value, team1Tools: selectedToolsTeam1, team2Tools: selectedToolsTeam2, scores: scores }));
 }
 
 function restoreActiveGame() {
     const sessionData = localStorage.getItem('fitnahActiveSession');
-    
     if (sessionData) {
         const gameData = JSON.parse(sessionData);
-        
         if (gameData.isPlaying) {
-            document.getElementById('gameName').value = gameData.gameName;
-            document.getElementById('team1Name').value = gameData.team1Name;
-            document.getElementById('team2Name').value = gameData.team2Name;
-            selectedToolsTeam1 = gameData.team1Tools || [];
-            selectedToolsTeam2 = gameData.team2Tools || [];
-            scores = gameData.scores || { team1: 0, team2: 0 };
-            
-            showScreen('game');
-            initGameDashboard();
-            
-            document.getElementById('score1').innerText = scores.team1;
-            document.getElementById('score2').innerText = scores.team2;
+            document.getElementById('gameName').value = gameData.gameName; document.getElementById('team1Name').value = gameData.team1Name; document.getElementById('team2Name').value = gameData.team2Name;
+            selectedToolsTeam1 = gameData.team1Tools || []; selectedToolsTeam2 = gameData.team2Tools || []; scores = gameData.scores || { team1: 0, team2: 0 };
+            showScreen('game'); initGameDashboard(); document.getElementById('score1').innerText = scores.team1; document.getElementById('score2').innerText = scores.team2;
         }
     }
 }
 
-function exitGame() {
-    localStorage.removeItem('fitnahActiveSession');
-    localStorage.removeItem('fitnahSetupDraft');
-    localStorage.removeItem('fitnaCurrentTurn');
-    localStorage.removeItem('playedQuestions'); // مسح سجل الأسئلة
-    location.reload();
-}
+function exitGame() { localStorage.removeItem('fitnahActiveSession'); localStorage.removeItem('fitnahSetupDraft'); localStorage.removeItem('fitnaCurrentTurn'); localStorage.removeItem('playedQuestions'); location.reload(); }
 
-// متغيرات لتتبع الدور
-let currentTurn = 1; 
-
-// هذه الدالة استدعها داخل زر "إنشاء اللعبة" أو دالة startGame()
 function initGameTurn() {
     const savedTurn = localStorage.getItem('fitnaCurrentTurn');
-    if (savedTurn) {
-        currentTurn = parseInt(savedTurn);
-    } else {
-        currentTurn = Math.random() < 0.5 ? 1 : 2;
-        localStorage.setItem('fitnaCurrentTurn', currentTurn);
-    }
+    if (savedTurn) { currentTurn = parseInt(savedTurn); } else { currentTurn = Math.random() < 0.5 ? 1 : 2; localStorage.setItem('fitnaCurrentTurn', currentTurn); }
     updateTurnDisplay();
 }
 
-// دالة التبديل عند الضغط على الشريط
-function switchTurn() {
-    currentTurn = currentTurn === 1 ? 2 : 1;
-    localStorage.setItem('fitnaCurrentTurn', currentTurn); // حفظ التبديل
-    updateTurnDisplay();
-}
+function switchTurn() { currentTurn = currentTurn === 1 ? 2 : 1; localStorage.setItem('fitnaCurrentTurn', currentTurn); updateTurnDisplay(); }
 
-// دالة تحديث النص في الشريط
 function updateTurnDisplay() {
-    const name1 = document.getElementById('t1Display').value || "الفريق الأول";
-    const name2 = document.getElementById('t2Display').value || "الفريق الثاني";
-    const indicator = document.getElementById('turnIndicator');
-    
-    const teamName = currentTurn === 1 ? name1 : name2;
-    indicator.innerText = `دور فريق: ${teamName}`;
+    const name1 = document.getElementById('t1Display').value || "الفريق الأول"; const name2 = document.getElementById('t2Display').value || "الفريق الثاني";
+    document.getElementById('turnIndicator').innerText = `دور فريق: ${currentTurn === 1 ? name1 : name2}`;
 }
 
-// استدعاء مباشر عند تحميل الصفحة لاسترجاع الدور المحفوظ
 window.onload = function() {
-    // استرجاع الدور
-    const savedTurn = localStorage.getItem('fitnaCurrentTurn');
-    if (savedTurn) {
-        currentTurn = parseInt(savedTurn);
-        updateTurnDisplay();
-    }
-    
-    // استرجاع حالة الأسئلة الملعوبة
-    restorePlayedQuestions();
+    const savedTurn = localStorage.getItem('fitnaCurrentTurn'); if (savedTurn) { currentTurn = parseInt(savedTurn); updateTurnDisplay(); }
+    const playedQuestions = JSON.parse(localStorage.getItem('playedQuestions')) || [];
+    playedQuestions.forEach(questionId => {
+        const btn = document.getElementById(questionId);
+        if (btn) { btn.disabled = true; btn.style.background = '#EBE9E4'; btn.style.color = '#ccc'; btn.innerText = "✓"; }
+    });
 };
 
-function restorePlayedQuestions() {
-    const playedQuestions = JSON.parse(localStorage.getItem('playedQuestions')) || [];
-    
-    // عمل Loop على الأزرار وتعطيلها
-    playedQuestions.forEach(questionId => {
-        const btn = document.getElementById(questionId); // تأكد أن كل زر له ID هو نفسه الـ ID الخاص بالسؤال
-        if (btn) {
-            btn.disabled = true;
-            btn.style.background = '#EBE9E4';
-            btn.style.color = '#ccc';
-            btn.innerText = "✓";
-        }
-    });
-}
-
-// ==========================================
-// 7. تسلسل تهيئة وتشغيل الملف عند الفتح
-// ==========================================
-initTools();
-initDescriptions(); 
-selectedCategories = JSON.parse(localStorage.getItem('selectedCategories') || '[]');
-updateSelectionBar();
-initFilterBar();
-render("الكل");
-
-restoreDraftState();
-restoreActiveGame();
+initTools(); initDescriptions(); selectedCategories = JSON.parse(localStorage.getItem('selectedCategories') || '[]');
+updateSelectionBar(); initFilterBar(); render("الكل"); restoreDraftState(); restoreActiveGame();
 
 </script>
 </body>
