@@ -303,12 +303,14 @@
             box-shadow: var(--shadow);
         }
 
-        .game-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px; /* كبرنا المسافة بين الكروت شوي لترتيب أفضل */
-            padding-bottom: 180px; /* مسافة أمان إضافية للشريط السفلي */
-        }
+        /* تنسيق الشبكة لتكون أعمدة ثابتة */
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 أعمدة دائماً */
+    gap: 10px;
+    padding: 10px;
+    margin-bottom: 150px; /* مساحة فراغ لتظهر لوحة التحكم بالأسفل */
+}
 
         .game-card {
             display: flex;
@@ -417,16 +419,27 @@
             gap: 10px;
         }
 
-        .score-controls {
-            display: flex;
-            background: var(--bg-color);
-            border-radius: 20px;
-            height: 50px;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 15px;
-            border: 1px solid #EBE9E4;
-        }
+        @media (max-width: 768px) {
+    /* هذه الخطوة مهمة جداً لكي لا يختفي جزء من اللعبة خلف اللوحة */
+    body {
+        padding-bottom: 120px; 
+    }
+
+    /* تثبيت لوحة التحكم في الأسفل */
+    .score-controls {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: 9999;
+        /* تأكد من إضافة خلفية واضحة هنا */
+        background-color: #4a5d4e; /* لون مقارب للون الزيتي في مشروعك */
+        border-radius: 0;
+        border: none;
+        border-top: 2px solid #ff6600;
+        padding: 10px;
+    }
+}
 
         .score-controls button {
             background: transparent;
@@ -532,10 +545,11 @@
         align-items: center;
     }
      
-    .game-card {
-        width: 95% !important;
-        margin-bottom: 10px;
-    }
+    /* تنسيق البطاقة لتكون متوافقة مع الشبكة */
+.game-card {
+    width: 100% !important; /* تأخذ مساحة العمود بالكامل */
+    height: auto;
+}
 }
 
     </style>
